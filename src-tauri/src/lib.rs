@@ -1,4 +1,5 @@
 mod geometry;
+mod instances;
 mod profile;
 
 #[tauri::command]
