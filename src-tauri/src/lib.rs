@@ -1,4 +1,5 @@
 mod geometry;
+mod profile;
 
 #[tauri::command]
 fn greet(name: &str) -> String {
