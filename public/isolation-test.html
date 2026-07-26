@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Featherium Isolation Test</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        background: #1e1e1e;
+        color: #eee;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+      }
+      #marker {
+        font-size: 1.1rem;
+        font-weight: 600;
+        word-break: break-all;
+        padding: 0 1rem;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Featherium isolation test</h1>
+    <p id="marker"></p>
+    <script>
+      function getOrCreateMarker() {
+        let marker = localStorage.getItem("instance_marker");
+        if (!marker) {
+          marker = crypto.randomUUID();
+          localStorage.setItem("instance_marker", marker);
+        }
+        document.cookie = "instance_marker=" + marker + "; path=/; max-age=31536000";
+        return marker;
+      }
+      document.getElementById("marker").textContent = getOrCreateMarker();
+    </script>
+  </body>
+</html>
