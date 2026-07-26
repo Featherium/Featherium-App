@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-close-service-instance"
+description = "Enables the close_service_instance command without any pre-configured scope."
+commands.allow = ["close_service_instance"]
+
+[[permission]]
+identifier = "deny-close-service-instance"
+description = "Denies the close_service_instance command without any pre-configured scope."
+commands.deny = ["close_service_instance"]

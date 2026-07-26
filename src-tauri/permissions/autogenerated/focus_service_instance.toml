@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-focus-service-instance"
+description = "Enables the focus_service_instance command without any pre-configured scope."
+commands.allow = ["focus_service_instance"]
+
+[[permission]]
+identifier = "deny-focus-service-instance"
+description = "Denies the focus_service_instance command without any pre-configured scope."
+commands.deny = ["focus_service_instance"]

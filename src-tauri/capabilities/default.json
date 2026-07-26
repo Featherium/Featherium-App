@@ -6,6 +6,10 @@
   "permissions": [
     "core:default",
     "opener:default",
-    "allow-greet"
+    "allow-open-service-instance",
+    "allow-focus-service-instance",
+    "allow-close-service-instance",
+    "allow-resize-service-instance",
+    "allow-debug-read-instance-marker"
   ]
 }
