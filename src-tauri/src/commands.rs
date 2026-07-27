@@ -42,7 +42,7 @@ pub(crate) fn spawn_instance_webview(
     Ok(webview_label)
 }
 
-fn persist_workspace(app: &AppHandle, state: &State<InstanceManager>) -> Result<(), String> {
+fn persist_workspace(app: &AppHandle, state: &State<'_, InstanceManager>) -> Result<(), String> {
     let instances = state.0.lock().map_err(|e| e.to_string())?;
     let persisted: Vec<PersistedInstance> = instances
         .iter()
@@ -59,9 +59,9 @@ fn persist_workspace(app: &AppHandle, state: &State<InstanceManager>) -> Result<
 }
 
 #[tauri::command]
-pub fn open_service_instance(
+pub async fn open_service_instance(
     app: AppHandle,
-    state: State<InstanceManager>,
+    state: State<'_, InstanceManager>,
     recipe_id: String,
     label: String,
 ) -> Result<InstanceId, String> {
@@ -88,9 +88,9 @@ pub fn open_service_instance(
 }
 
 #[tauri::command]
-pub fn focus_service_instance(
+pub async fn focus_service_instance(
     app: AppHandle,
-    state: State<InstanceManager>,
+    state: State<'_, InstanceManager>,
     id: InstanceId,
 ) -> Result<(), String> {
     let instances = state.0.lock().map_err(|e| e.to_string())?;
@@ -105,9 +105,9 @@ pub fn focus_service_instance(
 }
 
 #[tauri::command]
-pub fn close_service_instance(
+pub async fn close_service_instance(
     app: AppHandle,
-    state: State<InstanceManager>,
+    state: State<'_, InstanceManager>,
     id: InstanceId,
 ) -> Result<(), String> {
     {
@@ -124,9 +124,9 @@ pub fn close_service_instance(
 }
 
 #[tauri::command]
-pub fn resize_service_instance(
+pub async fn resize_service_instance(
     app: AppHandle,
-    state: State<InstanceManager>,
+    state: State<'_, InstanceManager>,
     id: InstanceId,
     bounds: ViewportRect,
 ) -> Result<(), String> {
@@ -163,9 +163,9 @@ pub fn resize_service_instance(
 }
 
 #[tauri::command]
-pub fn debug_read_instance_marker(
+pub async fn debug_read_instance_marker(
     app: AppHandle,
-    state: State<InstanceManager>,
+    state: State<'_, InstanceManager>,
     id: InstanceId,
 ) -> Result<Option<String>, String> {
     let instances = state.0.lock().map_err(|e| e.to_string())?;
@@ -184,9 +184,9 @@ pub fn debug_read_instance_marker(
 }
 
 #[tauri::command]
-pub fn set_instance_user_agent(
+pub async fn set_instance_user_agent(
     app: AppHandle,
-    state: State<InstanceManager>,
+    state: State<'_, InstanceManager>,
     id: InstanceId,
     native: bool,
 ) -> Result<(), String> {
@@ -251,7 +251,7 @@ pub struct InstanceSummary {
 
 #[tauri::command]
 pub fn list_service_instances(
-    state: State<InstanceManager>,
+    state: State<'_, InstanceManager>,
 ) -> Result<Vec<InstanceSummary>, String> {
     let instances = state.0.lock().map_err(|e| e.to_string())?;
     Ok(instances
