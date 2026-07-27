@@ -2,6 +2,7 @@ mod commands;
 mod geometry;
 mod instances;
 mod profile;
+mod recipes;
 
 use instances::InstanceManager;
 
