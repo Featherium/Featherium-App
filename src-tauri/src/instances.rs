@@ -25,6 +25,7 @@ pub struct InstanceRecord {
     pub webview_label: String,
     pub recipe_id: String,
     pub label: String,
+    pub native_user_agent: bool,
 }
 
 #[derive(Default)]
