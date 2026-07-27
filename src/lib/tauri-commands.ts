@@ -7,6 +7,13 @@ export interface ViewportRect {
   height: number
 }
 
+export interface InstanceSummary {
+  id: string
+  recipeId: string
+  label: string
+  nativeUserAgent: boolean
+}
+
 export async function openServiceInstance(recipeId: string, label: string): Promise<string> {
   return invoke("open_service_instance", { recipeId, label })
 }
@@ -25,4 +32,12 @@ export async function resizeServiceInstance(id: string, bounds: ViewportRect): P
 
 export async function debugReadInstanceMarker(id: string): Promise<string | null> {
   return invoke("debug_read_instance_marker", { id })
+}
+
+export async function setInstanceUserAgent(id: string, native: boolean): Promise<void> {
+  return invoke("set_instance_user_agent", { id, native })
+}
+
+export async function listServiceInstances(): Promise<InstanceSummary[]> {
+  return invoke("list_service_instances")
 }
