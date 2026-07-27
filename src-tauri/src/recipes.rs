@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub struct Recipe {
     pub id: &'static str,
     pub name: &'static str,
