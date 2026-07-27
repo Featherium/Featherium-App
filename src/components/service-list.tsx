@@ -1,6 +1,7 @@
 "use client"
 
-import { XIcon } from "lucide-react"
+import { useState } from "react"
+import { MoreVerticalIcon, XIcon } from "lucide-react"
 
 import {
   SidebarGroup,
@@ -10,6 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { InstanceSettingsSheet } from "@/components/instance-settings-sheet"
 import { useInstancesStore } from "@/store/instances"
 
 export function ServiceList() {
@@ -17,6 +19,8 @@ export function ServiceList() {
   const activeInstanceId = useInstancesStore((state) => state.activeInstanceId)
   const focusInstance = useInstancesStore((state) => state.focusInstance)
   const closeInstance = useInstancesStore((state) => state.closeInstance)
+  const [settingsInstanceId, setSettingsInstanceId] = useState<string | null>(null)
+  const settingsInstance = instances.find((instance) => instance.id === settingsInstanceId) ?? null
 
   return (
     <SidebarGroup>
@@ -31,12 +35,25 @@ export function ServiceList() {
             >
               <span>{instance.label}</span>
             </SidebarMenuButton>
+            <SidebarMenuAction
+              showOnHover
+              className="right-7"
+              onClick={() => setSettingsInstanceId(instance.id)}
+            >
+              <MoreVerticalIcon />
+            </SidebarMenuAction>
             <SidebarMenuAction showOnHover onClick={() => closeInstance(instance.id)}>
               <XIcon />
             </SidebarMenuAction>
           </SidebarMenuItem>
         ))}
       </SidebarMenu>
+      <InstanceSettingsSheet
+        instance={settingsInstance}
+        onOpenChange={(open) => {
+          if (!open) setSettingsInstanceId(null)
+        }}
+      />
     </SidebarGroup>
   )
 }
