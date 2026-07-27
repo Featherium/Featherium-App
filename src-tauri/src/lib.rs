@@ -18,6 +18,8 @@ pub fn run() {
             commands::close_service_instance,
             commands::resize_service_instance,
             commands::debug_read_instance_marker,
+            commands::set_instance_user_agent,
+            commands::list_service_instances,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -10,6 +10,8 @@
     "allow-focus-service-instance",
     "allow-close-service-instance",
     "allow-resize-service-instance",
-    "allow-debug-read-instance-marker"
+    "allow-debug-read-instance-marker",
+    "allow-set-instance-user-agent",
+    "allow-list-service-instances"
   ]
 }
