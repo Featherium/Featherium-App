@@ -1,8 +1,9 @@
 "use client"
 
 import * as React from "react"
-import { BriefcaseIcon, UserIcon } from "lucide-react"
+import { BriefcaseIcon, SettingsIcon, UserIcon } from "lucide-react"
 
+import { GlobalSettingsDialog } from "@/components/global-settings-dialog"
 import { NavUser } from "@/components/nav-user"
 import { ServiceList } from "@/components/service-list"
 import { SpaceSwitcher, type Space } from "@/components/space-switcher"
@@ -11,6 +12,9 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
 
@@ -26,6 +30,8 @@ const PLACEHOLDER_USER = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const [settingsOpen, setSettingsOpen] = React.useState(false)
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -35,9 +41,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <ServiceList />
       </SidebarContent>
       <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton onClick={() => setSettingsOpen(true)} tooltip="Configurações">
+              <SettingsIcon />
+              <span>Configurações</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
         <NavUser user={PLACEHOLDER_USER} />
       </SidebarFooter>
       <SidebarRail />
+      <GlobalSettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
     </Sidebar>
   )
 }
