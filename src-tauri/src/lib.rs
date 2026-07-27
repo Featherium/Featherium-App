@@ -3,6 +3,7 @@ mod geometry;
 mod instances;
 mod profile;
 mod recipes;
+mod workspace;
 
 use instances::InstanceManager;
 
