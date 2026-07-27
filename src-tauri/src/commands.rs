@@ -31,7 +31,11 @@ pub(crate) fn spawn_instance_webview(
     }
 
     let webview = window
-        .add_child(builder, LogicalPosition::new(0.0, 0.0), LogicalSize::new(1.0, 1.0))
+        .add_child(
+            builder,
+            LogicalPosition::new(0.0, 0.0),
+            LogicalSize::new(1.0, 1.0),
+        )
         .map_err(|e| e.to_string())?;
     webview.hide().map_err(|e| e.to_string())?;
 
@@ -72,8 +76,8 @@ pub fn open_service_instance(
         id,
         InstanceRecord {
             webview_label,
-            recipe_id: recipe_id.clone(),
-            label: label.clone(),
+            recipe_id,
+            label,
             native_user_agent: false,
         },
     );
@@ -187,22 +191,41 @@ pub fn set_instance_user_agent(
     native: bool,
 ) -> Result<(), String> {
     let window = app.get_window("main").ok_or("main window not found")?;
-    let (recipe_id, label) = {
+    let (recipe_id, label, old_webview_label) = {
         let instances = state.0.lock().map_err(|e| e.to_string())?;
         let record = instances
             .get(&id)
             .ok_or_else(|| "instance not found".to_string())?;
-        (record.recipe_id.clone(), record.label.clone())
+        (
+            record.recipe_id.clone(),
+            record.label.clone(),
+            record.webview_label.clone(),
+        )
     };
     let recipe = find_recipe(&recipe_id).ok_or_else(|| format!("unknown recipe: {recipe_id}"))?;
 
-    if let Some(webview) = app.get_webview(&format!("instance-{id}")) {
+    if let Some(webview) = app.get_webview(&old_webview_label) {
         webview.close().map_err(|e| e.to_string())?;
     }
 
-    let webview_label = spawn_instance_webview(&app, &window, id, recipe, native)?;
+    let webview_label = match spawn_instance_webview(&app, &window, id, recipe, native) {
+        Ok(webview_label) => webview_label,
+        Err(err) => {
+            // The old webview is already closed and gone; without a fresh webview the
+            // instance record would point at nothing, so drop it rather than leave a
+            // ghost entry that a restart can't recover.
+            let mut instances = state.0.lock().map_err(|e| e.to_string())?;
+            instances.remove(&id);
+            drop(instances);
+            persist_workspace(&app, &state)?;
+            return Err(err);
+        }
+    };
 
     let mut instances = state.0.lock().map_err(|e| e.to_string())?;
+    // Single-window app: commands are dispatched sequentially from one UI's IPC calls, so
+    // the window between the read-lock above and this re-insert is narrow and currently
+    // accepted (a concurrent close_service_instance could theoretically race here).
     instances.insert(
         id,
         InstanceRecord {
@@ -227,7 +250,9 @@ pub struct InstanceSummary {
 }
 
 #[tauri::command]
-pub fn list_service_instances(state: State<InstanceManager>) -> Result<Vec<InstanceSummary>, String> {
+pub fn list_service_instances(
+    state: State<InstanceManager>,
+) -> Result<Vec<InstanceSummary>, String> {
     let instances = state.0.lock().map_err(|e| e.to_string())?;
     Ok(instances
         .iter()
