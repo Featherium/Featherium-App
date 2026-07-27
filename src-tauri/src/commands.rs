@@ -28,12 +28,23 @@ pub fn open_service_instance(
     .data_directory(data_dir);
 
     let webview = window
-        .add_child(builder, LogicalPosition::new(0.0, 0.0), LogicalSize::new(1.0, 1.0))
+        .add_child(
+            builder,
+            LogicalPosition::new(0.0, 0.0),
+            LogicalSize::new(1.0, 1.0),
+        )
         .map_err(|e| e.to_string())?;
     webview.hide().map_err(|e| e.to_string())?;
 
     let mut instances = state.0.lock().map_err(|e| e.to_string())?;
-    instances.insert(id, InstanceRecord { webview_label, recipe_id, label });
+    instances.insert(
+        id,
+        InstanceRecord {
+            webview_label,
+            recipe_id,
+            label,
+        },
+    );
 
     Ok(id)
 }

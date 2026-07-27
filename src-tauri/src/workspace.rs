@@ -24,7 +24,10 @@ pub fn load_workspace(app_config_dir: &Path) -> Vec<PersistedInstance> {
     serde_json::from_str(&contents).unwrap_or_default()
 }
 
-pub fn save_workspace(app_config_dir: &Path, instances: &[PersistedInstance]) -> std::io::Result<()> {
+pub fn save_workspace(
+    app_config_dir: &Path,
+    instances: &[PersistedInstance],
+) -> std::io::Result<()> {
     std::fs::create_dir_all(app_config_dir)?;
     let contents =
         serde_json::to_string_pretty(instances).expect("PersistedInstance always serializes");
